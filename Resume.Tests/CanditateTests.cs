@@ -1,5 +1,5 @@
+using ResumeApp.Model;
 using System.ComponentModel.DataAnnotations;
-using static ResumeApp.Model.ResumeModel;
 
 namespace Resume.Tests
 {

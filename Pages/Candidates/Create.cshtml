@@ -1,7 +1,8 @@
 ﻿@page
-@model Model.ResumeModel.Candidate
+@model Model.Candidate
 @{
     ViewData["Title"] = "Create Candidate";
+    var mobileRegex = ResumeApp.Model.Validations.mobileRegex;
 }
 
 <h2>Create Candidate</h2>
@@ -24,13 +25,17 @@
     </div>
     <div class="mb-3">
         <label class="form-label">Mobile</label>
-        <input type="text" class="form-control" id="mobile" pattern="^\d{10}$" title="Enter a 10-digit number" />
+        <input type="text" class="form-control" id="mobile" pattern="@mobileRegex" title="Enter a 10-digit number" />
         <span class="text-danger" id="mobileError"></span>
     </div>
     <div class="mb-3">
         <label class="form-label">Degree</label>
         <select class="form-control" id="degree">
             <option value="">-- Select Degree --</option>
+            @foreach (var degree in Enum.GetValues(typeof(Model.Degrees)))
+            {
+                <option value="@((int)degree)">@degree</option>
+            }
         </select>
     </div>
     <button type="submit" class="btn btn-primary">Create</button>

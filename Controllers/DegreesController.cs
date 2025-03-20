@@ -14,7 +14,7 @@ namespace ResumeApp.Controllers
         public DegreesController(AppDbContext db) => _db = db;
 
         [HttpPost]
-        public async Task<IActionResult> CreateDegree(Degree degree)
+        public async Task<IActionResult> CreateDegree(Model.Degree degree)
         {
             if (string.IsNullOrWhiteSpace(degree.Name)) return BadRequest("Degree name is required");
             degree.CreationTime = DateTime.UtcNow;

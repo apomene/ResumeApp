@@ -14,7 +14,7 @@ namespace ResumeApp.Controllers
         public CandidatesController(AppDbContext db) => _db = db;
 
         [HttpPost]
-        public async Task<IActionResult> CreateCandidate(Candidate candidate)
+        public async Task<IActionResult> CreateCandidate(Model.Candidate candidate)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             candidate.CreationTime = DateTime.UtcNow;
