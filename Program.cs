@@ -1,25 +1,30 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.EntityFrameworkCore;
+using static ResumeApp.Model.ResumeModel;
 
-// Add services to the container.
-builder.Services.AddRazorPages();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+public  class Program
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        ConfigureServices(builder.Services);
+        var app = builder.Build();
+        ConfigureApp(app);
+        app.Run();
+    }
+
+    public static void ConfigureServices(IServiceCollection services)
+    {
+        services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("ResumeDb"));
+        services.AddControllers();
+        services.AddEndpointsApiExplorer();
+       // services.AddSwaggerGen();
+    }
+
+    public static void ConfigureApp(WebApplication app)
+    {
+        //app.UseSwagger();
+       // app.UseSwaggerUI();
+        app.UseRouting();
+        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+    }
 }
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapRazorPages();
-
-app.Run();

@@ -29,8 +29,10 @@ namespace Resume.Tests
         [TearDown]
         public void Teardown()
         {
-            _client.Dispose();
-            _application.Dispose();
+            if (_client !=null)
+                _client.Dispose();
+            if (_application != null)
+                _application.Dispose();
         }
 
         [Test]
