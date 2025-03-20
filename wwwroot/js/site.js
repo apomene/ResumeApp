@@ -1,5 +1,22 @@
 ﻿
+async function loadDegrees() {
+    try {
+        const response = await fetch('/api/Degrees');
+        if (!response.ok) throw new Error("Failed to fetch degrees.");
 
+        const degrees = await response.json();
+        const degreeSelect = document.getElementById('degree');
+        degrees.forEach(degree => {
+            const option = document.createElement('option');
+            option.value = degree.id;
+            option.textContent = degree.name;
+            degreeSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error(error);
+        alert("Error loading degrees.");
+    }
+}
 
 async function createCandidate() {
     clearValidationErrors();
