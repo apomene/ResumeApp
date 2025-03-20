@@ -42,5 +42,12 @@ namespace ResumeApp.Controllers
             await _db.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditCandidate(int id, Model.Candidate updatedCandidate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
+

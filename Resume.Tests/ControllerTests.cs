@@ -94,6 +94,37 @@ namespace Resume.Tests
         }
 
         [Test]
+        public async Task EditCandidate_ValidUpdate_ReturnsOk()
+        {
+            
+            var updatedCandidate = new
+            {
+                FirstName = "Jane",      
+                LastName = "Doe",        
+                Email = "janedoe@example.com", 
+                Mobile = "9876543210",   
+                DegreeId = 1,            
+                CV = (byte[])null      
+            };
+
+            var content = new StringContent(JsonSerializer.Serialize(updatedCandidate), Encoding.UTF8, "application/json");
+
+            var response = await _client.PutAsync("/api/candidates/1", content);
+
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+           
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var candidateFromResponse = JsonSerializer.Deserialize<dynamic>(responseBody);
+
+            Assert.That(candidateFromResponse.FirstName.ToString(), Is.EqualTo("Jane"));
+            Assert.That(candidateFromResponse.LastName.ToString(), Is.EqualTo("Doe"));
+            Assert.That(candidateFromResponse.Email.ToString(), Is.EqualTo("janedoe@example.com"));
+            Assert.That(candidateFromResponse.Mobile.ToString(), Is.EqualTo("9876543210"));
+        }
+
+
+
+        [Test]
         public async Task CreateDegree_ValidDegree_ReturnsCreated()
         {
             var degree = new { Name = "BSc Computer Science" };
