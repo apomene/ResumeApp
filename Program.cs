@@ -16,15 +16,21 @@ public  class Program
     {
         services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("ResumeDb"));
         services.AddControllers();
+         services.AddControllersWithViews(); // Enable MVC views
+        services.AddRazorPages(); // Enable Razor Pages
         services.AddEndpointsApiExplorer();
-       // services.AddSwaggerGen();
     }
 
     public static void ConfigureApp(WebApplication app)
     {
-        //app.UseSwagger();
-       // app.UseSwaggerUI();
         app.UseRouting();
-        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+            endpoints.MapRazorPages();
+        });
     }
 }

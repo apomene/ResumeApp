@@ -33,6 +33,13 @@ namespace ResumeApp.Model
             public DateTime CreationTime { get; set; }
         }
 
+        public enum Degrees
+        {
+            Bachelors,
+            Masters,
+            PhD
+        }
+
         public class EmailValidationAttribute : ValidationAttribute
         {
             private static readonly Regex EmailRegex = new Regex(

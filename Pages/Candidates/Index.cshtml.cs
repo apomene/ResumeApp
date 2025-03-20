@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ResumeApp.Pages
+namespace ResumeApp.Pages.Candidate
 {
     public class PrivacyModel : PageModel
     {

@@ -1,0 +1,60 @@
+﻿@page
+@model Model.ResumeModel.Candidate
+@{
+    ViewData["Title"] = "Candidates List";
+}
+
+<h2>Candidates</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Last Name</th>
+            <th>First Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Degree</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="candidatesTableBody">
+        <!-- Data will be populated dynamically -->
+    </tbody>
+</table>
+
+<a asp-page="/Candidates/Create" class="btn btn-primary">Add Candidate</a>
+
+@section Scripts {
+    <script>
+        async function loadCandidates() {
+            const response = await fetch('/api/Candidates');
+            const candidates = await response.json();
+            const tableBody = document.getElementById('candidatesTableBody');
+            tableBody.innerHTML = '';
+
+            candidates.forEach(candidate => {
+                const row = `<tr>
+                    <td>${candidate.lastName}</td>
+                    <td>${candidate.firstName}</td>
+                    <td>${candidate.email}</td>
+                    <td>${candidate.mobile || 'N/A'}</td>
+                    <td>${candidate.degree ? candidate.degree.name : 'N/A'}</td>
+                    <td>
+                        <a href="/Candidates/Edit?id=${candidate.id}" class="btn btn-warning btn-sm">Edit</a>
+                        <button class="btn btn-danger btn-sm" onclick="deleteCandidate(${candidate.id})">Delete</button>
+                    </td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        async function deleteCandidate(id) {
+            if (confirm('Are you sure you want to delete this candidate?')) {
+                await fetch(`/api/Candidates/${id}`, { method: 'DELETE' });
+                loadCandidates();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadCandidates);
+    </script>
+}
