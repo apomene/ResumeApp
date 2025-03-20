@@ -16,15 +16,16 @@ public  class Program
     {
         services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("ResumeDb"));
         services.AddControllers();
-         services.AddControllersWithViews(); // Enable MVC views
+        services.AddControllersWithViews(); // Enable MVC views
         services.AddRazorPages(); // Enable Razor Pages
         services.AddEndpointsApiExplorer();
+        
     }
 
     public static void ConfigureApp(WebApplication app)
     {
         app.UseRouting();
-        
+        app.UseStaticFiles();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute(
