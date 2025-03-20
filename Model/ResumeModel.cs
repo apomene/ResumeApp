@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace ResumeApp.Model
 {
@@ -9,7 +10,7 @@ namespace ResumeApp.Model
             public int Id { get; set; }
             [Required] public string LastName { get; set; } = string.Empty;
             [Required] public string FirstName { get; set; } = string.Empty;
-            [Required, EmailAddress] public string Email { get; set; } = string.Empty;
+            [Required, EmailValidationAttribute] public string Email { get; set; } = string.Empty;
             [RegularExpression("^\\d{10}$", ErrorMessage = "Mobile number must be 10 digits")] public string? Mobile { get; set; }
             public int? DegreeId { get; set; }
             public Degree? Degree { get; set; }
@@ -22,6 +23,22 @@ namespace ResumeApp.Model
             public int Id { get; set; }
             [Required] public string Name { get; set; } = string.Empty;
             public DateTime CreationTime { get; set; }
+        }
+
+        public class EmailValidationAttribute : ValidationAttribute
+        {
+            private static readonly Regex EmailRegex = new Regex(
+                "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                RegexOptions.Compiled);
+
+            protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+            {
+                if (value is string email && EmailRegex.IsMatch(email))
+                {
+                    return ValidationResult.Success;
+                }
+                return new ValidationResult("Invalid email format");
+            }
         }
     }
 }
