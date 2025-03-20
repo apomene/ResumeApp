@@ -46,7 +46,28 @@ namespace ResumeApp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> EditCandidate(int id, Model.Candidate updatedCandidate)
         {
-            throw new NotImplementedException();
+
+            // Check if the updatedCandidate is valid
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            // Check if the candidate exists
+            var existingCandidate = await _db.Candidates.FindAsync(id);
+            if (existingCandidate == null)
+            {
+                return NotFound(new { message = $"Candidate with ID {id} not found." });
+            }
+
+            // Update fields 
+            existingCandidate.FirstName = updatedCandidate.FirstName;
+            existingCandidate.LastName = updatedCandidate.LastName;
+            existingCandidate.Email = updatedCandidate.Email;
+            existingCandidate.Mobile = updatedCandidate.Mobile;
+            existingCandidate.DegreeId = updatedCandidate.DegreeId;
+            existingCandidate.CV = updatedCandidate.CV; // If applicable
+
+            _db.Entry(existingCandidate).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return Ok(existingCandidate);
         }
     }
 }

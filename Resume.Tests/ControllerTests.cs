@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using NUnit.Framework;
+using ResumeApp.Model;
 using static System.Net.Mime.MediaTypeNames;
 
 
@@ -96,32 +97,73 @@ namespace Resume.Tests
         [Test]
         public async Task EditCandidate_ValidUpdate_ReturnsOk()
         {
-            
+            // Create an initial candidate to update
+            var candidate = new
+            {
+                LastName = "Doe",
+                FirstName = "John",
+                Email = "some@yahoo.com",
+                Mobile = "1234567890"
+            };
+
+            // Updated candidate details
             var updatedCandidate = new
             {
-                FirstName = "Jane",      
-                LastName = "Doe",        
-                Email = "janedoe@example.com", 
-                Mobile = "9876543210",   
-                DegreeId = 1,            
-                CV = (byte[])null      
+                FirstName = "Jane",
+                LastName = "Ones",
+                Email = "janedoe@example.com",
+                Mobile = "9876543210",
+                DegreeId = 1
+            };
+
+            var content = new StringContent(JsonSerializer.Serialize(candidate), Encoding.UTF8, "application/json");
+
+            // Create the candidate first (this will assign an ID)
+            var createResponse = await _client.PostAsync("/api/candidates", content);
+
+            Assert.That(createResponse.StatusCode, Is.EqualTo(HttpStatusCode.Created));  // Ensure it was created
+
+            var updateContent = new StringContent(JsonSerializer.Serialize(updatedCandidate), Encoding.UTF8, "application/json");
+
+            // Now update the candidate with ID 1 (make sure the candidate exists in DB)
+            var response = await _client.PutAsync("/api/candidates/1", updateContent);
+
+            // Assert that the response is OK
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+            // Read the response body
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            // Deserialize the response to the Candidate object
+            var candidateFromResponse = JsonSerializer.Deserialize<Candidate>(responseBody);
+
+            // Assert that the returned candidate matches the updated data
+            Assert.That(candidateFromResponse.FirstName, Is.EqualTo("Jane"));
+            Assert.That(candidateFromResponse.LastName, Is.EqualTo("Ones"));
+            Assert.That(candidateFromResponse.Email, Is.EqualTo("janedoe@example.com"));
+            Assert.That(candidateFromResponse.Mobile, Is.EqualTo("9876543210"));
+        }
+
+        [Test]
+        public async Task EditCandidate_InvalidId_ReturnsNotFound()
+        {
+            var updatedCandidate = new
+            {
+                FirstName = "Jane",
+                LastName = "Doe",
+                Email = "janedoe@example.com",
+                Mobile = "9876543210",
+                DegreeId = 1
             };
 
             var content = new StringContent(JsonSerializer.Serialize(updatedCandidate), Encoding.UTF8, "application/json");
 
-            var response = await _client.PutAsync("/api/candidates/1", content);
+            // Assuming ID 999 doesn't exist
+            var response = await _client.PutAsync("/api/candidates/999", content);
 
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-           
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var candidateFromResponse = JsonSerializer.Deserialize<dynamic>(responseBody);
-
-            Assert.That(candidateFromResponse.FirstName.ToString(), Is.EqualTo("Jane"));
-            Assert.That(candidateFromResponse.LastName.ToString(), Is.EqualTo("Doe"));
-            Assert.That(candidateFromResponse.Email.ToString(), Is.EqualTo("janedoe@example.com"));
-            Assert.That(candidateFromResponse.Mobile.ToString(), Is.EqualTo("9876543210"));
+            // Assert that the response is Not Found (Status 404)
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
-
 
 
         [Test]
