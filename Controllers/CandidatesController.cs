@@ -34,17 +34,17 @@ namespace ResumeApp.Controllers
         }
 
         [HttpGet("Edit/{id}")]
-        public async Task<IActionResult> Create(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             var candidate = await _db.Candidates.FindAsync(id);
             if (candidate == null)
             {
-                return RedirectToPage("/Candidates/Edit");
+                return RedirectToPage("/Candidates/Create");
             }
 
             TempData["Candidate"] = System.Text.Json.JsonSerializer.Serialize(candidate);
 
-            return RedirectToPage("/Candidates/Edit");
+            return RedirectToPage("/Candidates/Create");
         }
 
         [HttpDelete("{id}")]

@@ -1,25 +1,24 @@
 ﻿
-async function loadDegrees() {
-    try {
-        const response = await fetch('/api/Degrees');
-        if (!response.ok) throw new Error("Failed to fetch degrees.");
+//async function loadDegrees() {
+//    try {
+//        const response = await fetch('/api/Degrees');
+//        if (!response.ok) throw new Error("Failed to fetch degrees.");
 
-        const degrees = await response.json();
-        const degreeSelect = document.getElementById('degree');
-        degrees.forEach(degree => {
-            const option = document.createElement('option');
-            option.value = degree.id;
-            option.textContent = degree.name;
-            degreeSelect.appendChild(option);
-        });
-    } catch (error) {
-        console.error(error);
-        alert("Error loading degrees.");
-    }
-}
+//        const degrees = await response.json();
+//        const degreeSelect = document.getElementById('degree');
+//        degrees.forEach(degree => {
+//            const option = document.createElement('option');
+//            option.value = degree.id;
+//            option.textContent = degree.name;
+//            degreeSelect.appendChild(option);
+//        });
+//    } catch (error) {
+//        console.error(error);
+//        alert("Error loading degrees.");
+//    }
+//}
 
 async function createCandidate() {
-    clearValidationErrors();
 
     const candidate = {
         firstName: document.getElementById("firstname").value.trim(),
@@ -34,9 +33,6 @@ async function createCandidate() {
         displayValidationErrors(validationErrors);
         return;
     }
-
-    //let candidateId = document.getElementById("candidateId").value; 
-    //let isEdit = candidateId != "0"; 
     let url = isEdit ? `/api/Candidates/${candidateId}` : `/api/Candidates`;
     let method = isEdit ? "PUT" : "POST";
 
@@ -79,9 +75,36 @@ function displayValidationErrors(errors) {
     }
 }
 
-function clearValidationErrors() {
-    //["firstNameError", "lastNameError", "emailError", "mobileError"].forEach(id => {
-    //    document.getElementById(id).textContent = "";
-    //});
-}
 document.addEventListener('DOMContentLoaded', loadDegrees);
+document.addEventListener('DOMContentLoaded', loadCandidates);
+
+
+async function createDegree() {
+
+    const degree = {
+        Name: document.getElementById("degree").value.trim(),      
+    };
+
+
+    let url = isEdit ? `/api/Degrees/${degreeId}` : `/api/Degrees`;
+    let method = isEdit ? "PUT" : "POST";
+
+
+    try {
+        const response = await fetch(url, {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(degree)
+        });
+
+        if (response.ok) {
+            alert(isEdit ? "Degree updated successfully!" : "Degree created successfully!");
+            window.location.href = "/Degrees";
+        } else {
+            alert("Error saving degree.");
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Failed to save degree.");
+    }
+}

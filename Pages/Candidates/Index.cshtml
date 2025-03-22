@@ -14,6 +14,7 @@
             <th>Email</th>
             <th>Mobile</th>
             <th>Degree</th>
+            <th>Creation Time</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -39,6 +40,7 @@
                     <td>${candidate.email}</td>
                     <td>${candidate.mobile || 'N/A'}</td>
                     <td>${candidate.degree ? candidate.degree.name : 'N/A'}</td>
+                     <td>${candidate.creationTime}</td>
                     <td>
                         <a href="/api/Candidates/Edit/${candidate.id}" class="btn btn-warning btn-sm">Edit</a>
                         <button class="btn btn-danger btn-sm" onclick="deleteCandidate(${candidate.id})">Delete</button>

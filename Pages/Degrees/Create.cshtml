@@ -1,0 +1,30 @@
+﻿@page
+@model ResumeApp.Pages.Degree.CreateModel
+@{
+    bool isEdit = Model.Degree?.Id != 0;
+    ViewData["Title"] = isEdit ? "Edit Degree" : "Create Degree";
+}
+
+<h2>@(isEdit ? "Edit Degree" : "Create Degree")</h2>
+
+<form method="post" onsubmit="event.preventDefault(); createDegree();">
+    <input type="hidden" asp-for="Degree.Id" />
+
+    <div class="mb-3">
+        <label class="form-label">Degree</label>
+        <select class="form-control" id="degree" asp-for="Degree.Name">
+            <option value="">-- Select Degree --</option>
+            @foreach (var degree in Enum.GetValues(typeof(ResumeApp.Model.Degrees)))
+            {
+                <option value="@degree"> @degree </option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">@(isEdit ? "Update" : "Create")</button>
+</form>
+
+<script>
+    var isEdit = @(isEdit.ToString().ToLower()); 
+    var degreeId = @(Model.Degree?.Id ?? 0); 
+</script>

@@ -7,7 +7,7 @@ namespace ResumeApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DegreesController : ControllerBase
+    public class DegreesController : Controller
     {
 
         private readonly AppDbContext _db;
@@ -31,6 +31,40 @@ namespace ResumeApp.Controllers
         {
             var degree = await _db.Degrees.FindAsync(id);
             return degree == null ? NotFound() : Ok(degree);
+        }
+
+        [HttpGet("Edit/{id}")]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var degree = await _db.Degrees.FindAsync(id);
+            if (degree == null)
+            {
+                return RedirectToPage("/Degrees/Create");
+            }
+
+            TempData["Degree"] = System.Text.Json.JsonSerializer.Serialize(degree);
+
+            return RedirectToPage("/Degrees/Create");
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditDegree(int id, Model.Degree updatedDegree)
+        {
+
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var existingDegree = await _db.Degrees.FindAsync(id);
+            if (existingDegree == null)
+            {
+                return NotFound(new { message = $"Degree with ID {id} not found." });
+            }
+
+            // Update fields 
+            existingDegree.Name = updatedDegree.Name;
+ 
+            _db.Entry(existingDegree).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return Ok(existingDegree);
         }
 
         [HttpDelete("{id}")]
