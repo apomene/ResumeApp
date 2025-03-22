@@ -21,36 +21,3 @@
 </table>
 
 <a asp-page="/Degrees/Create" class="btn btn-primary">Add Degree</a>
-
-@section Scripts {
-    <script>
-        async function loadDegrees() {
-            const response = await fetch('/api/Degrees');
-            const degrees = await response.json();
-            const tableBody = document.getElementById('degressTableBody');
-            tableBody.innerHTML = '';
-
-            degrees.forEach(degree => {
-                const row = `<tr>
-                    <td>${degree.name}</td>
-                    <td>${degree.creationTime}</td>
-                   
-                    <td>
-                        <a href="/api/Degrees/Edit/${degree.id}" class="btn btn-warning btn-sm">Edit</a>
-                        <button class="btn btn-danger btn-sm" onclick="deleteDegree(${degree.id})">Delete</button>
-                    </td>
-                </tr>`;
-                tableBody.innerHTML += row;
-            });
-        }
-
-        async function deleteDegree(id) {
-            if (confirm('Are you sure you want to delete this degree?')) {
-                await fetch(`/api/Degrees/${id}`, { method: 'DELETE' });
-                loadDegrees();
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', loadDegrees);
-    </script>
-}

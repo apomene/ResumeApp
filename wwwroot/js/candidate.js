@@ -1,23 +1,26 @@
 ﻿
-//async function loadDegrees() {
-//    try {
-//        const response = await fetch('/api/Degrees');
-//        if (!response.ok) throw new Error("Failed to fetch degrees.");
+async function loadCandidates() {
+    const response = await fetch('/api/Candidates');
+    const candidates = await response.json();
+    const tableBody = document.getElementById('candidatesTableBody');
+    tableBody.innerHTML = '';
 
-//        const degrees = await response.json();
-//        const degreeSelect = document.getElementById('degree');
-//        degrees.forEach(degree => {
-//            const option = document.createElement('option');
-//            option.value = degree.id;
-//            option.textContent = degree.name;
-//            degreeSelect.appendChild(option);
-//        });
-//    } catch (error) {
-//        console.error(error);
-//        alert("Error loading degrees.");
-//    }
-//}
-
+    candidates.forEach(candidate => {
+        const row = `<tr>
+                    <td>${candidate.lastName}</td>
+                    <td>${candidate.firstName}</td>
+                    <td>${candidate.email}</td>
+                    <td>${candidate.mobile || 'N/A'}</td>
+                    <td>${candidate.degree ? candidate.degree.name : 'N/A'}</td>
+                     <td>${candidate.creationTime}</td>
+                    <td>
+                        <a href="/api/Candidates/Edit/${candidate.id}" class="btn btn-warning btn-sm">Edit</a>
+                        <button class="btn btn-danger btn-sm" onclick="deleteCandidate(${candidate.id})">Delete</button>
+                    </td>
+                </tr>`;
+        tableBody.innerHTML += row;
+    });
+}
 async function createCandidate() {
 
     const candidate = {
@@ -56,6 +59,12 @@ async function createCandidate() {
     }
 }
 
+async function deleteCandidate(id) {
+    if (confirm('Are you sure you want to delete this candidate?')) {
+        await fetch(`/api/Candidates/${id}`, { method: 'DELETE' });
+        loadCandidates();
+    }
+}
 function validateForm(candidate) {
     const errors = {};
     if (!candidate.firstName) errors.firstName = "First name is required.";
@@ -75,36 +84,7 @@ function displayValidationErrors(errors) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', loadDegrees);
 document.addEventListener('DOMContentLoaded', loadCandidates);
 
 
-async function createDegree() {
 
-    const degree = {
-        Name: document.getElementById("degree").value.trim(),      
-    };
-
-
-    let url = isEdit ? `/api/Degrees/${degreeId}` : `/api/Degrees`;
-    let method = isEdit ? "PUT" : "POST";
-
-
-    try {
-        const response = await fetch(url, {
-            method: method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(degree)
-        });
-
-        if (response.ok) {
-            alert(isEdit ? "Degree updated successfully!" : "Degree created successfully!");
-            window.location.href = "/Degrees";
-        } else {
-            alert("Error saving degree.");
-        }
-    } catch (error) {
-        console.error(error);
-        alert("Failed to save degree.");
-    }
-}
