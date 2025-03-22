@@ -209,6 +209,64 @@ namespace Resume.Tests
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
+
+        [Test]
+        public async Task EditDegree_ValidUpdate_ReturnsOk()
+        {
+            // Create an initial degree to update
+            var degree = new
+            {
+                Name = "Phd"
+
+            };
+            // Updated degree details
+            var updatedDegree = new
+            {
+                Name = "Masters"
+            };
+
+            var content = new StringContent(JsonSerializer.Serialize(degree), Encoding.UTF8, "application/json");
+
+            var createResponse = await _client.PostAsync("/api/degrees", content);
+
+            Assert.That(createResponse.StatusCode, Is.EqualTo(HttpStatusCode.Created));  // Ensure it was created
+
+            var updateContent = new StringContent(JsonSerializer.Serialize(updatedDegree), Encoding.UTF8, "application/json");
+
+            var response = await _client.PutAsync("/api/degrees/1", updateContent);
+
+            // Assert that the response is OK
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+            // Read the response body
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            // Deserialize the response to the Candidate object
+            var degreeFromResponse = JsonSerializer.Deserialize<Degree>(responseBody);
+
+            // Assert that the returned candidate matches the updated data
+            Assert.That(degreeFromResponse.Name, Is.EqualTo("Masters"));
+        }
+
+        [Test]
+        public async Task EditDegree_InvalidId_ReturnsNotFound()
+        {
+            var updateDegree = new
+            {
+                Name = "Phd"
+               
+            };
+
+            var content = new StringContent(JsonSerializer.Serialize(updateDegree), Encoding.UTF8, "application/json");
+
+            // Assuming ID 999 doesn't exist
+            var response = await _client.PutAsync("/api/degrees/999", content);
+
+            // Assert that the response is Not Found (Status 404)
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+
     }
 }
 
