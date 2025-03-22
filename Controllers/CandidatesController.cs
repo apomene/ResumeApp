@@ -8,7 +8,7 @@ namespace ResumeApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CandidatesController : ControllerBase
+    public class CandidatesController : Controller
     {
         private readonly AppDbContext _db;
         public CandidatesController(AppDbContext db) => _db = db;
@@ -31,6 +31,20 @@ namespace ResumeApp.Controllers
         {
             var candidate = await _db.Candidates.FindAsync(id);
             return candidate == null ? NotFound() : Ok(candidate);
+        }
+
+        [HttpGet("Edit/{id}")]
+        public async Task<IActionResult> Create(int id)
+        {
+            var candidate = await _db.Candidates.FindAsync(id);
+            if (candidate == null)
+            {
+                return RedirectToPage("/Candidates/Edit");
+            }
+
+            TempData["Candidate"] = System.Text.Json.JsonSerializer.Serialize(candidate);
+
+            return RedirectToPage("/Candidates/Edit");
         }
 
         [HttpDelete("{id}")]

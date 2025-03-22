@@ -1,42 +1,51 @@
 ﻿@page
-@model Model.Candidate
+@model ResumeApp.Pages.Candidate.CreateModel
 @{
-    ViewData["Title"] = "Create Candidate";
+    bool isEdit = Model.Candidate?.Id != 0;
+    ViewData["Title"] = isEdit ? "Edit Candidate" : "Create Candidate";
     var mobileRegex = ResumeApp.Model.Validations.mobileRegex;
 }
 
-<h2>Create Candidate</h2>
+<h2>@(isEdit ? "Edit Candidate" : "Create Candidate")</h2>
 
-<form id="createCandidateForm" onsubmit="event.preventDefault(); createCandidate();">
+<form method="post" onsubmit="event.preventDefault(); createCandidate();">
+    <input type="hidden" asp-for="Candidate.Id" />
+
     <div class="mb-3">
         <label class="form-label">First Name</label>
-        <input type="text" class="form-control" id="firstName" required />
-        <span class="text-danger" id="firstNameError"></span>
+        <input type="text" class="form-control" id="firstname" asp-for="Candidate.FirstName" required />
+        <span class="text-danger" asp-validation-for="Candidate.FirstName"></span>
     </div>
     <div class="mb-3">
         <label class="form-label">Last Name</label>
-        <input type="text" class="form-control" id="lastName" required />
-        <span class="text-danger" id="lastNameError"></span>
+        <input type="text" class="form-control" id="lastname" asp-for="Candidate.LastName" required />
+        <span class="text-danger" asp-validation-for="Candidate.LastName"></span>
     </div>
     <div class="mb-3">
         <label class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" required />
-        <span class="text-danger" id="emailError"></span>
+        <input type="email" class="form-control" id="email" asp-for="Candidate.Email" required />
+        <span class="text-danger" asp-validation-for="Candidate.Email"></span>
     </div>
     <div class="mb-3">
         <label class="form-label">Mobile</label>
-        <input type="text" class="form-control" id="mobile" pattern="@mobileRegex" title="Enter a 10-digit number" />
-        <span class="text-danger" id="mobileError"></span>
+        <input type="text" class="form-control" id="mobile" asp-for="Candidate.Mobile" pattern="@mobileRegex" title="Enter a 10-digit number" />
+        <span class="text-danger" asp-validation-for="Candidate.Mobile"></span>
     </div>
     <div class="mb-3">
         <label class="form-label">Degree</label>
-        <select class="form-control" id="degree">
+        <select class="form-control" id="degree" asp-for="Candidate.DegreeId">
             <option value="">-- Select Degree --</option>
-            @foreach (var degree in Enum.GetValues(typeof(Model.Degrees)))
+            @foreach (var degree in Enum.GetValues(typeof(ResumeApp.Model.Degrees)))
             {
-                <option value="@((int)degree)">@degree</option>
+                <option value="@((int)degree)"> @degree </option>
             }
         </select>
     </div>
-    <button type="submit" class="btn btn-primary">Create</button>
+
+    <button type="submit" class="btn btn-primary">@(isEdit ? "Update" : "Create")</button>
 </form>
+
+<script>
+    var isEdit = @(isEdit.ToString().ToLower()); 
+    var candidateId = @(Model.Candidate?.Id ?? 0); 
+</script>

@@ -22,8 +22,8 @@ async function createCandidate() {
     clearValidationErrors();
 
     const candidate = {
-        firstName: document.getElementById("firstName").value.trim(),
-        lastName: document.getElementById("lastName").value.trim(),
+        firstName: document.getElementById("firstname").value.trim(),
+        lastName: document.getElementById("lastname").value.trim(),
         email: document.getElementById("email").value.trim(),
         mobile: document.getElementById("mobile").value.trim(),
         degreeId: document.getElementById("degree").value || null
@@ -35,22 +35,28 @@ async function createCandidate() {
         return;
     }
 
+    //let candidateId = document.getElementById("candidateId").value; 
+    //let isEdit = candidateId != "0"; 
+    let url = isEdit ? `/api/Candidates/${candidateId}` : `/api/Candidates`;
+    let method = isEdit ? "PUT" : "POST";
+
+
     try {
-        const response = await fetch('/api/Candidates', {
-            method: 'POST',
+        const response = await fetch(url, {
+            method: method,
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(candidate)
         });
 
         if (response.ok) {
-            alert("Candidate created successfully!");
+            alert(isEdit ? "Candidate updated successfully!" : "Candidate created successfully!");
             window.location.href = "/Candidates";
         } else {
-            alert("Error creating candidate.");
+            alert("Error saving candidate.");
         }
     } catch (error) {
         console.error(error);
-        alert("Failed to create candidate.");
+        alert("Failed to save candidate.");
     }
 }
 
@@ -74,8 +80,8 @@ function displayValidationErrors(errors) {
 }
 
 function clearValidationErrors() {
-    ["firstNameError", "lastNameError", "emailError", "mobileError"].forEach(id => {
-        document.getElementById(id).textContent = "";
-    });
+    //["firstNameError", "lastNameError", "emailError", "mobileError"].forEach(id => {
+    //    document.getElementById(id).textContent = "";
+    //});
 }
 document.addEventListener('DOMContentLoaded', loadDegrees);
