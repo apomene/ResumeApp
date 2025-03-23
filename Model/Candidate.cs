@@ -21,7 +21,6 @@ namespace ResumeApp.Model
         public string? Mobile { get; set; }
         [JsonPropertyName("degreeId")]
         public int? DegreeId { get; set; }
-        public Degree? Degree { get; set; }
         public byte[]? CV { get; set; }
         [JsonPropertyName("creationTime")]
         public DateTime CreationTime { get; set; }

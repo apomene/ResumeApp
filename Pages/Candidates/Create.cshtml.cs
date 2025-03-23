@@ -22,7 +22,7 @@ namespace ResumeApp.Pages.Candidate
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Degrees = await _db.Degrees.ToListAsync();
+            Degrees = await _db.Degrees.Distinct().ToListAsync();
             if (TempData["Candidate"] != null)
             {
                 // Deserialize candidate data

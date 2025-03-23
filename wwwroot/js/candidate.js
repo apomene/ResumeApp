@@ -3,10 +3,12 @@ async function loadCandidates() {
     const response = await fetch('/api/Candidates');
     const candidates = await response.json();
     const tableBody = document.getElementById('candidatesTableBody');
-    tableBody.innerHTML = '';
+    if (tableBody != undefined) {
+        tableBody.innerHTML = '';
 
-    candidates.forEach(candidate => {
-        const row = `<tr>
+
+        candidates.forEach(candidate => {
+            const row = `<tr>
                     <td>${candidate.lastName}</td>
                     <td>${candidate.firstName}</td>
                     <td>${candidate.email}</td>
@@ -18,8 +20,9 @@ async function loadCandidates() {
                         <button class="btn btn-danger btn-sm" onclick="deleteCandidate(${candidate.id})">Delete</button>
                     </td>
                 </tr>`;
-        tableBody.innerHTML += row;
-    });
+            tableBody.innerHTML += row;
+        });
+    }
 }
 async function createCandidate() {
 

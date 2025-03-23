@@ -3,10 +3,12 @@ async function loadDegrees() {
     const response = await fetch('/api/Degrees');
     const degrees = await response.json();
     const tableBody = document.getElementById('degressTableBody');
-    tableBody.innerHTML = '';
+    if (tableBody != undefined) {
+        tableBody.innerHTML = '';
 
-    degrees.forEach(degree => {
-        const row = `<tr>
+
+        degrees.forEach(degree => {
+            const row = `<tr>
                     <td>${degree.name}</td>
                     <td>${degree.creationTime}</td>
                    
@@ -15,8 +17,9 @@ async function loadDegrees() {
                         <button class="btn btn-danger btn-sm" onclick="deleteDegree(${degree.id})">Delete</button>
                     </td>
                 </tr>`;
-        tableBody.innerHTML += row;
-    });
+            tableBody.innerHTML += row;
+        });
+    }
 }
 
 async function createDegree() {
