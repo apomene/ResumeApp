@@ -41,6 +41,10 @@
             }
         </select>
     </div>
+    <div class="mb-3">
+        <label class="form-label">Upload CV (PDF or Word)</label>
+        <input type="file" class="form-control" id="cvFile" accept=".pdf, .doc, .docx" />
+    </div>
 
     <button type="submit" class="btn btn-primary">@(isEdit ? "Update" : "Create")</button>
 </form>
