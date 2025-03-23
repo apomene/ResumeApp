@@ -35,9 +35,9 @@
         <label class="form-label">Degree</label>
         <select class="form-control" id="degree" asp-for="Candidate.DegreeId">
             <option value="">-- Select Degree --</option>
-            @foreach (var degree in Enum.GetValues(typeof(ResumeApp.Model.Degrees)))
+            @foreach (var degree in Model.Degrees)
             {
-                <option value="@((int)degree)"> @degree </option>
+                <option value="@degree.Id">@degree.Name</option>
             }
         </select>
     </div>

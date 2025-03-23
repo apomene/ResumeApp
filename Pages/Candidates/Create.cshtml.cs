@@ -3,16 +3,26 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using ResumeApp.Model;
+using static ResumeApp.Model.ResumeModel;
 
 namespace ResumeApp.Pages.Candidate
 {
     public class CreateModel : PageModel
     {
+        private readonly AppDbContext _db;
+
+        public CreateModel(AppDbContext db)
+        {
+            _db = db;
+        }
         [BindProperty]
         public ResumeApp.Model.Candidate Candidate { get; set; }
 
-        public IActionResult OnGet()
+        public List<ResumeApp.Model.Degree> Degrees { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
+            Degrees = await _db.Degrees.ToListAsync();
             if (TempData["Candidate"] != null)
             {
                 // Deserialize candidate data
