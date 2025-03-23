@@ -35,7 +35,7 @@
         <label class="form-label">Degree</label>
         <select class="form-control" id="degree" asp-for="Candidate.DegreeId">
             <option value="">-- Select Degree --</option>
-            @foreach (var degree in Model.Degrees)
+            @foreach (var degree in Model.Degrees.DistinctBy(d => d.Name))
             {
                 <option value="@degree.Id">@degree.Name</option>
             }
